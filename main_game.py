@@ -7,6 +7,7 @@ import random
 import choose
 import lay_mines
 import open_event
+import timer
 from pygame.locals import *
 
 
@@ -27,8 +28,6 @@ background_sound = pygame.mixer.music.load('material/sound/background.ogg')
 pygame.mixer.music.set_volume(0.2)
 win_sound = pygame.mixer.Sound('material/sound/win.wav')
 win_sound.set_volume(0.2)
-
-
 
 
 
@@ -86,6 +85,10 @@ def game_main(level,sound):
 	#确定双击事件所需的列表
 	location = [(0,0)]
 
+	#开始计时
+	t = timer.timer()
+	t.start()
+
 	while True:
 		for event in pygame.event.get():
 			if event.type == QUIT:
@@ -99,7 +102,7 @@ def game_main(level,sound):
 					i = event.pos[0]//30
 					j = event.pos[1]//30
 					if (map1[i][j] == '' or map1[i][j] == '9') and map2[i][j] == '':			
-						open_event.arround(screen_main,i,j,map1,map2,sound)
+						open_event.arround(screen_main,i,j,map1,map2,sound,t,level)
 						print('翻开成功')
 						pygame.display.flip()
 					if map1[i][j] != '' and map1[i][j] != '9' and map2[i][j] == '':
@@ -108,21 +111,21 @@ def game_main(level,sound):
 						flag_num = str(open_event.flag_digital(i,j,map2))
 						if last == (event.pos[0],event.pos[1]) and flag_num == map1[i][j]:
 							if i-1>=0 and j-1>=0 and (map1[i-1][j-1] == '' or map1[i-1][j-1] == '9') and map2[i-1][j-1] == '':
-								open_event.arround(screen_main,i-1,j-1,map1,map2,sound)
+								open_event.arround(screen_main,i-1,j-1,map1,map2,sound,t,level)
 							if i-1>=0 and (map1[i-1][j] == '' or map1[i-1][j] == '9') and map2[i-1][j] == '':
-								open_event.arround(screen_main,i-1,j,map1,map2,sound)
+								open_event.arround(screen_main,i-1,j,map1,map2,sound,t,level)
 							if i-1>=0 and j+1<len(map1[0]) and (map1[i-1][j+1] == '' or map1[i-1][j+1] == '9') and map2[i-1][j+1] == '':
-								open_event.arround(screen_main,i-1,j+1,map1,map2,sound)
+								open_event.arround(screen_main,i-1,j+1,map1,map2,sound,t,level)
 							if j-1>=0 and (map1[i][j-1] == '' or map1[i][j-1] == '9') and map2[i][j-1] == '':
-								open_event.arround(screen_main,i,j-1,map1,map2,sound)
-							if j+1<len(map1[0]) and map1[i][j+1] == '' and map2[i][j+1] == '':
-								open_event.arround(screen_main,i,j+1,map1,map2,sound)
-							if i+1<len(map1) and j-1>=0 and map1[i+1][j-1] == '' and map2[i+1][j-1] == '':
-								open_event.arround(screen_main,i+1,j-1,map1,map2,sound)
-							if i+1<len(map1) and map1[i+1][j] == '' and map2[i+1][j] == '':
-								open_event.arround(screen_main,i+1,j,map1,map2,sound)
-							if i+1<len(map1) and j+1<len(map1[0]) and map1[i+1][j+1] == '' and map2[i+1][j+1] == '':
-								open_event.arround(screen_main,i+1,j+1,map1,map2,sound)
+								open_event.arround(screen_main,i,j-1,map1,map2,sound,t,level)
+							if j+1<len(map1[0]) and (map1[i][j+1] == '' or map1[i][j+1] == '9') and map2[i][j+1] == '':
+								open_event.arround(screen_main,i,j+1,map1,map2,sound,t,level)
+							if i+1<len(map1) and j-1>=0 and (map1[i+1][j-1] == '' or map1[i+1][j-1] == '9') and map2[i+1][j-1] == '':
+								open_event.arround(screen_main,i+1,j-1,map1,map2,sound,t,level)
+							if i+1<len(map1) and (map1[i+1][j] == '' or map1[i+1][j] == '9') and map2[i+1][j] == '':
+								open_event.arround(screen_main,i+1,j,map1,map2,sound,t,level)
+							if i+1<len(map1) and j+1<len(map1[0]) and (map1[i+1][j+1] == '' or map1[i+1][j+1] == '9') and map2[i+1][j+1] == '':
+								open_event.arround(screen_main,i+1,j+1,map1,map2,sound,t,level)
 							pygame.display.flip()
 							
 
@@ -160,6 +163,8 @@ def game_main(level,sound):
 							if map2[x][y] == '10':
 								flags += 1
 					if flags == mines:
+						t.stop()
+						process_time = t.get_time()
 						result = endresult.result_judge(map1,map2,sound)
 						pygame.time.delay(1000)
-						endresult.result_screen(result,sound)
+						endresult.result_screen(result,sound,process_time,level)

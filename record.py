@@ -1,13 +1,13 @@
 
-
-def record(level,result,score):
+#游戏战绩方面
+def record(level,result,process_time):
 	
-	with open('text.txt') as f1:
+	with open('record.txt') as f1:
 		lines = f1.readlines()
 	
 	if level == '低':
-		if score<int(lines[2]):
-			lines[2] = str(score)+'\n'
+		if process_time<int(lines[2]):
+			lines[2] = str(process_time)+'\n'
 
 		lines[4] = str(int(lines[4])+1)+'\n'
 
@@ -19,8 +19,8 @@ def record(level,result,score):
 		lines[8] = str(lines[8])+'%'+'\n'
 	
 	if level == '中':
-		if score<int(lines[11]):
-			lines[11] = str(score)+'\n'
+		if process_time<int(lines[11]):
+			lines[11] = str(process_time)+'\n'
 
 		lines[13] = str(int(lines[13])+1)+'\n'
 
@@ -32,8 +32,8 @@ def record(level,result,score):
 		lines[17] = str(lines[17])+'%'+'\n'
 
 	if level == '高':
-		if score<int(lines[20]):
-			lines[20] = str(score)+'\n'
+		if process_time<int(lines[20]):
+			lines[20] = str(process_time)+'\n'
 
 		lines[22] = str(int(lines[22])+1)+'\n'
 
@@ -44,10 +44,22 @@ def record(level,result,score):
 
 		lines[26] = str(lines[26])+'%'+'\n'
 	
-	f2 = open('text.txt','w')
+	f2 = open('record.txt','w')
 	for i in range(len(lines)):
 		f2.write(lines[i])
 	f2.close()
+
+#记录获取
+def get_record(level):
+	with open('record.txt','r') as f:
+		lines = f.readlines()
+	if level == '低':
+		return lines[2],lines[4],lines[8]
+	elif level == '中':
+		return lines[11],lines[15],lines[17]
+	elif level == '高':
+		return lines[20],lines[24],lines[26]
+	
 
 
 

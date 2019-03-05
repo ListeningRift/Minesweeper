@@ -3,6 +3,7 @@
 import pygame
 import main_game
 import endresult
+import timer
 from pygame.locals import *
 
 pygame.mixer.init()
@@ -55,8 +56,10 @@ def flag_digital(i,j,map1):
 
 
 #周围判断
-def arround(screen,i,j,map1,map2,sound):
+def arround(screen,i,j,map1,map2,sound,t,level):
 	if map1[i][j] == '9':
+		t.stop()
+		process_time = t.get_time()
 		omine_image = pygame.image.load('material/picture/mine.gif').convert()
 		mine_image = pygame.transform.scale(omine_image,(22,22))
 		screen.blit(mine_image,(i*30+3,j*30+3))
@@ -71,7 +74,7 @@ def arround(screen,i,j,map1,map2,sound):
 					pygame.time.delay(100)
 		result = '游戏失败'
 		pygame.time.delay(1000)
-		endresult.result_screen(result,sound)
+		endresult.result_screen(result,sound,process_time,level)
 
 
 
@@ -85,21 +88,21 @@ def arround(screen,i,j,map1,map2,sound):
 			map1[i][j] = ' '
 
 			if i-1>=0 and j-1>=0 and len(map1[i-1][j-1]) == 0 and map2[i-1][j-1] == '':
-				arround(screen,i-1,j-1,map1,map2,sound)
+				arround(screen,i-1,j-1,map1,map2,sound,t,level)
 			if i-1>=0 and len(map1[i-1][j]) == 0 and map2[i-1][j] == '':
-				arround(screen,i-1,j,map1,map2,sound)
+				arround(screen,i-1,j,map1,map2,sound,t,level)
 			if i-1>=0 and j+1<len(map1[0]) and len(map1[i-1][j+1]) == 0 and map2[i-1][j+1] == '':
-				arround(screen,i-1,j+1,map1,map2,sound)
+				arround(screen,i-1,j+1,map1,map2,sound,t,level)
 			if j-1>=0 and len(map1[i][j-1]) == 0 and map2[i][j-1] == '':
-				arround(screen,i,j-1,map1,map2,sound)
+				arround(screen,i,j-1,map1,map2,sound,t,level)
 			if j+1<len(map1[0]) and len(map1[i][j+1]) == 0 and map2[i][j+1] == '':
-				arround(screen,i,j+1,map1,map2,sound)
+				arround(screen,i,j+1,map1,map2,sound,t,level)
 			if i+1<len(map1) and j-1>=0 and len(map1[i+1][j-1]) == 0 and map2[i+1][j-1] == '':
-				arround(screen,i+1,j-1,map1,map2,sound)
+				arround(screen,i+1,j-1,map1,map2,sound,t,level)
 			if i+1<len(map1) and len(map1[i+1][j]) == 0 and map2[i+1][j] == '':
-				arround(screen,i+1,j,map1,map2,sound)
+				arround(screen,i+1,j,map1,map2,sound,t,level)
 			if i+1<len(map1) and j+1<len(map1[0]) and len(map1[i+1][j+1]) == 0 and map2[i+1][j+1] == '':
-				arround(screen,i+1,j+1,map1,map2,sound)
+				arround(screen,i+1,j+1,map1,map2,sound,t,level)
 		s_font = pygame.font.Font('material/benmoyouyuan.ttf',19)
 		if map1[i][j] == '1':
 			color = (86,98,166)
